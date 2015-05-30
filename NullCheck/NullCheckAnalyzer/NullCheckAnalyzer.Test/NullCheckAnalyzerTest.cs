@@ -2,28 +2,25 @@
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using TestHelper;
-using NullCheckAnalyzer;
 
 namespace NullCheckAnalyzer.Test
 {
     [TestClass]
-    public class UnitTest : CodeFixVerifier
+    public sealed class NullCheckAnalyzerTest : CodeFixVerifier
     {
-
         //No diagnostics expected to show up
         [TestMethod]
         public void TestMethod1()
         {
-            var test = @"";
+            const string test = @"";
 
             VerifyCSharpDiagnostic(test);
         }
 
         //Diagnostic and CodeFix both triggered and checked for
         [TestMethod]
-        public void TestMethod2()
+        public void FailOnCtorWithoutNullChecks()
         {
             var test = @"
     using System;
@@ -51,13 +48,13 @@ namespace NullCheckAnalyzer.Test
     }";
             var expected = new DiagnosticResult
             {
-                Id = NullCheckAnalyzerAnalyzer.DiagnosticId,
-                Message = string.Format(NullCheckAnalyzerAnalyzer.DiagnosticMessageFormat, ".ctor", "TypeName", "value"),
+                Id = NullCheckAnalyzer.DiagnosticId,
+                Message = string.Format(Resources.AnalyzerMessageFormat, ".ctor", "TypeName", "value"),
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
-                            new DiagnosticResultLocation("Test0.cs", 11, 15)
-                        }
+                        new DiagnosticResultLocation("Test0.cs", 13, 36)
+                    }
             };
 
             VerifyCSharpDiagnostic(test, expected);
@@ -96,7 +93,7 @@ namespace NullCheckAnalyzer.Test
 
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
-            return new NullCheckAnalyzerAnalyzer();
+            return new NullCheckAnalyzer();
         }
     }
 }

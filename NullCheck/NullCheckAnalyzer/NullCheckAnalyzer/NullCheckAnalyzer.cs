@@ -6,10 +6,14 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace NullCheckAnalyzer
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class NullCheckAnalyzerAnalyzer : DiagnosticAnalyzer
+    public class NullCheckAnalyzer : DiagnosticAnalyzer
     {
+        private static readonly ImmutableHashSet<string> nullableAttributes = new[]
+        {
+            "NotNull", "CanBeNull"
+        }.ToImmutableHashSet();
+
         public const string DiagnosticId = "NullCheckAnalyzer_MethodContainNulls";
-        public const string DiagnosticMessageFormat = "Method {0} in type {1} does not have null/not null attribute for argument {2}";
 
         // You can change these strings in the Resources.resx file. If you do not want your analyzer to be localize-able, you can use regular strings for Title and MessageFormat.
         internal static readonly LocalizableString Title = new LocalizableResourceString(nameof(Resources.AnalyzerTitle), Resources.ResourceManager, typeof(Resources));
@@ -24,20 +28,31 @@ namespace NullCheckAnalyzer
 
         public override void Initialize(AnalysisContext context)
         {
-            // TODO: Consider registering other actions that act on syntax instead of or in addition to symbols
-            context.RegisterSymbolAction(AnalyzeSymbol, SymbolKind.NamedType);
+            context.RegisterSymbolAction(AnalyzeSymbol, SymbolKind.Method);
         }
 
         private static void AnalyzeSymbol(SymbolAnalysisContext context)
         {
-            // TODO: Replace the following code with your own analysis, generating Diagnostic objects for any issues you find
-            var namedTypeSymbol = (INamedTypeSymbol)context.Symbol;
+            var methodSymbol = context.Symbol as IMethodSymbol;
 
-            // Find just those named type symbols with names containing lowercase letters.
-            if (namedTypeSymbol.Name.ToCharArray().Any(char.IsLower))
+            if (ReferenceEquals(null, methodSymbol) || methodSymbol.DeclaredAccessibility == Accessibility.Private)
             {
+                return;
+            }
+
+            foreach (var parameter in methodSymbol.Parameters)
+            {
+                var markedAsRight = parameter.GetAttributes().Any(a => nullableAttributes.Contains(a.AttributeClass.Name));
+
+                if (markedAsRight)
+                {
+                    return;
+                }
+                
+                var type = methodSymbol.ContainingType;
+
                 // For all such symbols, produce a diagnostic.
-                var diagnostic = Diagnostic.Create(Rule, namedTypeSymbol.Locations[0], namedTypeSymbol.Name);
+                var diagnostic = Diagnostic.Create(Rule, parameter.Locations[0], methodSymbol.Name, type.Name, parameter.Name);
 
                 context.ReportDiagnostic(diagnostic);
             }
