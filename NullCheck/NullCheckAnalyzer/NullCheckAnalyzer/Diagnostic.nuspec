@@ -3,17 +3,16 @@
   <metadata>
     <id>NullCheckAnalyzer</id>
     <version>1.0.0.0</version>
-    <title>NullCheckAnalyzer</title>
-    <authors>NullCheckAnalyzer</authors>
-    <owners>NullCheckAnalyzer</owners>
-    <licenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</licenseUrl>
-    <projectUrl>http://PROJECT_URL_HERE_OR_DELETE_THIS_LINE</projectUrl>
-    <iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>
+    <title>NotNull/CanBeNull analyzer</title>
+    <authors>Igor Manushin</authors>
+    <owners>Igor Manushin</owners>
+    <licenseUrl>https://raw.githubusercontent.com/imanushin/NullCheck/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/imanushin/NullCheck</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>NullCheckAnalyzer</description>
+    <description>Warning if parameter does not have NotNull/CanBeNull attribute</description>
     <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
     <copyright>Copyright</copyright>
-    <tags>NullCheckAnalyzer, analyzers</tags>
+    <tags>NullCheckAnalyzer, analyzers, Roslyn, Resharper, NotNull, CanBeNull</tags>
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="System" targetFramework="" />
     </frameworkAssemblies>
