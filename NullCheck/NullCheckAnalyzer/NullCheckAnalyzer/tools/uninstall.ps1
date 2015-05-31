@@ -13,7 +13,7 @@ foreach ($analyzerFilePath in Get-ChildItem $analyzersPath -Filter *.dll)
 
 # Uninstall language specific analyzers.
 # $project.Type gives the language name like (C# or VB.NET)
-$languageAnalyzersPath = join-path $analyzersPath
+$languageAnalyzersPath = $analyzersPath
 
 foreach ($analyzerFilePath in Get-ChildItem $languageAnalyzersPath -Filter *.dll)
 {
