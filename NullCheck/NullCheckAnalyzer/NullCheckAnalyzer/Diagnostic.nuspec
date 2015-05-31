@@ -2,14 +2,14 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>NullCheckAnalyzer</id>
-    <version>1.0.0.1</version>
+    <version>1.0.0.2</version>
     <title>Null checking analyzer</title>
     <authors>Igor Manushin</authors>
     <owners>Igor Manushin</owners>
     <licenseUrl>https://raw.githubusercontent.com/imanushin/NullCheck/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/imanushin/NullCheck</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>NotNull/CanBeNull analyzer</description>
+    <description>This package is for projects on Microsoft Visual Studio 2015 to have design-time and compile-time warnings. It checks, that all reference parameters in methods and constructors have NotNull/CanBeNull attributes. You have to use Jetbrains.</description>
 	<summary>Warning if parameter does not have NotNull/CanBeNull attribute</summary>
     <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
     <copyright>Copyright</copyright>
@@ -17,6 +17,9 @@
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="System" targetFramework="" />
     </frameworkAssemblies>
+	<dependencies>
+      <dependency id="JetBrains.Annotations" version="6.1.0" />
+	</dependencies>
   </metadata>
   <files>
     <file src="*.dll" target="tools\analyzers\" exclude="**\Microsoft.CodeAnalysis.*;**\System.Collections.Immutable.*;**\System.Reflection.Metadata.*" />
