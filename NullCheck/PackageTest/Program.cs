@@ -6,9 +6,19 @@ using System.Threading.Tasks;
 
 namespace PackageTest
 {
-    class Program
+    internal static class Program
     {
-        static void Main(string[] args)
+        public class Test
+        {
+            private string value;
+
+            public Test(string value)
+            {
+                this.value = value;
+            }
+        }
+
+        private static void Main(string[] args)
         {
         }
     }
