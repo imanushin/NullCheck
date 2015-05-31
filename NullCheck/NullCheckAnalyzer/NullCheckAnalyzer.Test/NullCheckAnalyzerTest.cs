@@ -48,7 +48,7 @@ namespace NullCheckAnalyzer.Test
     }";
             var expected = new DiagnosticResult
             {
-                Id = NullCheckAnalyzer.DiagnosticId,
+                Id = NullCheckAnalyzer.ParameterIsNullId,
                 Message = string.Format(Resources.AnalyzerMessageFormat, ".ctor", "TypeName", "value"),
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
