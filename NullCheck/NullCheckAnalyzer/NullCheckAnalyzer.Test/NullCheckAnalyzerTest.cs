@@ -17,8 +17,7 @@ namespace NullCheckAnalyzer.Test
 
             VerifyCSharpDiagnostic(test);
         }
-
-        //Diagnostic and CodeFix both triggered and checked for
+        
         [TestMethod]
         public void FailOnCtorWithoutNullChecks()
         {
@@ -60,6 +59,140 @@ namespace NullCheckAnalyzer.Test
             VerifyCSharpDiagnostic(test, expected);
         }
 
+        [TestMethod]
+        public void FailOnMethodWithoutNullChecks()
+        {
+            const string test = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        internal sealed class TypeName
+        {
+            public TypeName()
+            {
+            }
+
+            public void SetValue(string value)
+            {
+                Value = value;
+            }
+            
+            public string Value
+            {
+                get;
+                private set;
+            }
+        }
+    }";
+            var expected = new DiagnosticResult
+            {
+                Id = NullCheckAnalyzer.ParameterIsNullId,
+                Message = string.Format(Resources.AnalyzerMessageFormat, "SetValue", "TypeName", "value"),
+                Severity = DiagnosticSeverity.Warning,
+                Locations =
+                    new[] {
+                        new DiagnosticResultLocation("Test0.cs", 17, 41)
+                    }
+            };
+
+            VerifyCSharpDiagnostic(test, expected);
+        }
+
+        [TestMethod]
+        public void SuccessOnMethodWithNullChecks()
+        {
+            const string test = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        internal sealed class TypeName
+        {
+            public TypeName()
+            {
+            }
+
+            public void SetValue([NotNull] string value)
+            {
+                Value = value;
+            }
+            
+            public string Value
+            {
+                get;
+                private set;
+            }
+        }
+    }";
+            var expected = new DiagnosticResult
+            {
+                Id = NullCheckAnalyzer.ParameterIsNullId,
+                Message = string.Format(Resources.AnalyzerMessageFormat, ".ctor", "TypeName", "value"),
+                Severity = DiagnosticSeverity.Warning,
+                Locations =
+                    new[] {
+                        new DiagnosticResultLocation("Test0.cs", 13, 36)
+                    }
+            };
+
+            VerifyCSharpDiagnostic(test);
+        }
+
+        [TestMethod]
+        public void SuccessOnMethodWithNullChecksIgnore()
+        {
+            const string test = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        internal sealed class TypeName
+        {
+            public TypeName()
+            {
+            }
+
+            public void SetValue([CanBeNull] string value)
+            {
+                Value = value;
+            }
+            
+            public string Value
+            {
+                get;
+                private set;
+            }
+        }
+    }";
+            var expected = new DiagnosticResult
+            {
+                Id = NullCheckAnalyzer.ParameterIsNullId,
+                Message = string.Format(Resources.AnalyzerMessageFormat, ".ctor", "TypeName", "value"),
+                Severity = DiagnosticSeverity.Warning,
+                Locations =
+                    new[] {
+                        new DiagnosticResultLocation("Test0.cs", 13, 36)
+                    }
+            };
+
+            VerifyCSharpDiagnostic(test);
+        }
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
             return new NullCheckAnalyzer();
