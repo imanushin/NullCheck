@@ -8,11 +8,6 @@ namespace NullCheckAnalyzer
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class NullCheckAnalyzer : DiagnosticAnalyzer
     {
-        private static readonly ImmutableHashSet<string> nullableAttributes = new[]
-        {
-            "NotNull", "CanBeNull"
-        }.ToImmutableHashSet();
-
         public const string ParameterIsNullId = "NullCheckAnalyzer_MethodContainNulls";
 
         // You can change these strings in the Resources.resx file. If you do not want your analyzer to be localize-able, you can use regular strings for Title and MessageFormat.
@@ -40,15 +35,8 @@ namespace NullCheckAnalyzer
                 return;
             }
 
-            foreach (var parameter in methodSymbol.Parameters)
+            foreach (var parameter in ParametersGetter.GetParametersToFix(methodSymbol))
             {
-                var markedAsRight = parameter.GetAttributes().Any(a => nullableAttributes.Contains(a.AttributeClass.Name));
-
-                if (markedAsRight)
-                {
-                    return;
-                }
-                
                 var type = methodSymbol.ContainingType;
 
                 // For all such symbols, produce a diagnostic.

@@ -10,6 +10,7 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.CodeAnalysis.Rename;
 using Microsoft.CodeAnalysis.Text;
 
@@ -37,31 +38,51 @@ namespace NullCheckAnalyzer
             var diagnosticSpan = diagnostic.Location.SourceSpan;
 
             // Find the type declaration identified by the diagnostic.
-            var declaration = root.FindToken(diagnosticSpan.Start).Parent.AncestorsAndSelf().OfType<TypeDeclarationSyntax>().First();
+            var token = root.FindToken(diagnosticSpan.Start);
+            var parent = token.Parent;
+            var elements = parent.AncestorsAndSelf().ToImmutableArray();
+            var methods = elements.OfType<BaseMethodDeclarationSyntax>().ToImmutableArray();
+
+            var declaration = methods.First();
 
             // Register a code action that will invoke the fix.
             context.RegisterCodeFix(
-                CodeAction.Create("Make uppercase", c => MakeUppercaseAsync(context.Document, declaration, c)),
+                CodeAction.Create("Make uppercase", c => AddAttributeForAllParameters(context.Document, declaration, c)),
                 diagnostic);
         }
 
-        private async Task<Solution> MakeUppercaseAsync(Document document, TypeDeclarationSyntax typeDecl, CancellationToken cancellationToken)
+        private async Task<Document> AddAttributeForAllParameters(Document document, BaseMethodDeclarationSyntax methodDeclaration, CancellationToken cancellationToken)
         {
-            // Compute new uppercase name.
-            var identifierToken = typeDecl.Identifier;
-            var newName = identifierToken.Text.ToUpperInvariant();
-
             // Get the symbol representing the type to be renamed.
             var semanticModel = await document.GetSemanticModelAsync(cancellationToken);
-            var typeSymbol = semanticModel.GetDeclaredSymbol(typeDecl, cancellationToken);
+            var methodSymbol = semanticModel.GetDeclaredSymbol(methodDeclaration, cancellationToken);
 
-            // Produce a new solution that has all references to that type renamed, including the declaration.
-            var originalSolution = document.Project.Solution;
-            var optionSet = originalSolution.Workspace.Options;
-            var newSolution = await Renamer.RenameSymbolAsync(document.Project.Solution, typeSymbol, newName, optionSet, cancellationToken).ConfigureAwait(false);
+            var parametersToFix = ParametersGetter.GetParametersToFix(methodDeclaration);
 
-            // Return the new solution with the now-uppercase type name.
-            return newSolution;
+            var root = await document.GetSyntaxRootAsync(cancellationToken);
+
+            var newRoot = root;
+
+            foreach (var parameterSymbol in parametersToFix)
+            {
+                var attribute = SyntaxFactory.Attribute(SyntaxFactory.ParseName("NotNull"));
+                var separateAttributeList = SyntaxFactory.SeparatedList(new[] { attribute });
+
+                var newAttributeList = SyntaxFactory.AttributeList(separateAttributeList);
+
+                var attributes = parameterSymbol.AttributeLists.Add(newAttributeList);
+                var newParameter = SyntaxFactory.Parameter(
+                    attributes,
+                    parameterSymbol.Modifiers,
+                    parameterSymbol.Type,
+                    parameterSymbol.Identifier,
+                    parameterSymbol.Default);
+
+                newRoot = newRoot.ReplaceNode(parameterSymbol, newParameter);
+            }
+
+            var newDocument = document.WithSyntaxRoot(newRoot);
+            return newDocument;
         }
     }
 }
