@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace NullCheckAnalyzer
 {
-    internal sealed class ParametersGetter
+    internal static class ParametersGetter
     {
         private static readonly ImmutableHashSet<string> nullableAttributes = new[]
 {
@@ -16,15 +16,10 @@ namespace NullCheckAnalyzer
         {
             return method
                 .Parameters
-                .Where(p => !p.GetAttributes().Any(a => nullableAttributes.Contains(a.AttributeClass.Name)))
-                .ToImmutableArray();
-        }
-
-        public static ImmutableArray<ParameterSyntax> GetParametersToFix(BaseMethodDeclarationSyntax method)
-        {
-            return method.ParameterList
-                .Parameters
-                .Where(p => !p.AttributeLists.SelectMany(a => a.Attributes).Any(a => nullableAttributes.Contains(a.Name.FullSpan.ToString())))
+                .Where(p => 
+                    p.RefKind != RefKind.Out && 
+                    p.Type.IsReferenceType && 
+                    !p.GetAttributes().Any(a => nullableAttributes.Contains(a.AttributeClass.Name)))
                 .ToImmutableArray();
         }
     }

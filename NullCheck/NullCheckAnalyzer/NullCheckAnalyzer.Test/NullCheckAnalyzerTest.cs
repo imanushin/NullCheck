@@ -11,7 +11,7 @@ namespace NullCheckAnalyzer.Test
     {
         //No diagnostics expected to show up
         [TestMethod]
-        public void TestMethod1()
+        public void PassOnEmptyTest()
         {
             const string test = @"";
 
@@ -193,6 +193,100 @@ namespace NullCheckAnalyzer.Test
 
             VerifyCSharpDiagnostic(test);
         }
+
+        [TestMethod]
+        public void SuccessOnMethodWithOutParameters()
+        {
+            const string test = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        internal sealed class TypeName
+        {
+            public TypeName()
+            {
+            }
+
+            public void SetValue(int value)
+            {
+                Value = value.ToString();
+            }
+            
+            public string Value
+            {
+                get;
+                private set;
+            }
+        }
+    }";
+            var expected = new DiagnosticResult
+            {
+                Id = NullCheckAnalyzer.ParameterIsNullId,
+                Message = string.Format(Resources.AnalyzerMessageFormat, ".ctor", "TypeName", "value"),
+                Severity = DiagnosticSeverity.Warning,
+                Locations =
+                    new[] {
+                        new DiagnosticResultLocation("Test0.cs", 13, 36)
+                    }
+            };
+
+            VerifyCSharpDiagnostic(test);
+        }
+
+
+
+        [TestMethod]
+        public void SuccessOnMethodWithNotReferenceType()
+        {
+            const string test = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        internal sealed class TypeName
+        {
+            public TypeName()
+            {
+            }
+
+            public void SetValue(out string value)
+            {
+                value = Value;
+            }
+            
+            public string Value
+            {
+                get;
+                private set;
+            }
+        }
+    }";
+            var expected = new DiagnosticResult
+            {
+                Id = NullCheckAnalyzer.ParameterIsNullId,
+                Message = string.Format(Resources.AnalyzerMessageFormat, ".ctor", "TypeName", "value"),
+                Severity = DiagnosticSeverity.Warning,
+                Locations =
+                    new[] {
+                        new DiagnosticResultLocation("Test0.cs", 13, 36)
+                    }
+            };
+
+            VerifyCSharpDiagnostic(test);
+        }
+
+
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
             return new NullCheckAnalyzer();
