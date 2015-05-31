@@ -68,7 +68,4 @@
     <Rule Id="CA2241" Action="Warning" />
     <Rule Id="CA2242" Action="Warning" />
   </Rules>
-  <Rules AnalyzerId="NullCheckAnalyzer" RuleNamespace="NullCheckAnalyzer">
-    <Rule Id="NullCheckAnalyzer_MethodContainNulls" Action="Error" />
-  </Rules>
 </RuleSet>
