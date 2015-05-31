@@ -2,14 +2,15 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>NullCheckAnalyzer</id>
-    <version>1.0.0.0</version>
-    <title>NotNull/CanBeNull analyzer</title>
+    <version>1.0.0.1</version>
+    <title>Null checking analyzer</title>
     <authors>Igor Manushin</authors>
     <owners>Igor Manushin</owners>
     <licenseUrl>https://raw.githubusercontent.com/imanushin/NullCheck/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/imanushin/NullCheck</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Warning if parameter does not have NotNull/CanBeNull attribute</description>
+    <description>NotNull/CanBeNull analyzer</description>
+	<summary>Warning if parameter does not have NotNull/CanBeNull attribute</summary>
     <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
     <copyright>Copyright</copyright>
     <tags>NullCheckAnalyzer, analyzers, Roslyn, Resharper, NotNull, CanBeNull</tags>
