@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NullCheckAnalyzer.Test", "N
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NullCheckAnalyzer.Vsix", "NullCheckAnalyzer\NullCheckAnalyzer.Vsix\NullCheckAnalyzer.Vsix.csproj", "{AE801EA5-1F95-4332-B20B-E26D348028BF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PackageTest", "PackageTest\PackageTest.csproj", "{34C8C059-8D92-489E-B3ED-CCC5FDF99553}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{AE801EA5-1F95-4332-B20B-E26D348028BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE801EA5-1F95-4332-B20B-E26D348028BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE801EA5-1F95-4332-B20B-E26D348028BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34C8C059-8D92-489E-B3ED-CCC5FDF99553}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34C8C059-8D92-489E-B3ED-CCC5FDF99553}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34C8C059-8D92-489E-B3ED-CCC5FDF99553}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34C8C059-8D92-489E-B3ED-CCC5FDF99553}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
