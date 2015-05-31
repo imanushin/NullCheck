@@ -16,6 +16,14 @@ namespace TestHelper
     /// </summary>
     public abstract partial class CodeFixVerifier : DiagnosticVerifier
     {
+        private const string attributesFile = @"namespace Attributes
+    {
+        public sealed class NotNullAttribute : Attribute
+        {
+            
+        }
+    }";
+
         /// <summary>
         /// Returns the codefix being tested (C#) - to be implemented in non-abstract class
         /// </summary>
@@ -73,8 +81,9 @@ namespace TestHelper
         /// <param name="allowNewCompilerDiagnostics">A bool controlling whether or not the test will fail if the CodeFix introduces other warnings after being applied</param>
         private void VerifyFix(string language, DiagnosticAnalyzer analyzer, CodeFixProvider codeFixProvider, string oldSource, string newSource, int? codeFixIndex, bool allowNewCompilerDiagnostics)
         {
+            var attributesDocument = CreateDocument(attributesFile, language);
             var document = CreateDocument(oldSource, language);
-            var analyzerDiagnostics = GetSortedDiagnosticsFromDocuments(analyzer, new[] { document });
+            var analyzerDiagnostics = GetSortedDiagnosticsFromDocuments(analyzer, new[] { document, attributesDocument });
             var compilerDiagnostics = GetCompilerDiagnostics(document);
             var attempts = analyzerDiagnostics.Length;
 
@@ -96,7 +105,7 @@ namespace TestHelper
                 }
 
                 document = ApplyFix(document, actions.ElementAt(0));
-                analyzerDiagnostics = GetSortedDiagnosticsFromDocuments(analyzer, new[] { document });
+                analyzerDiagnostics = GetSortedDiagnosticsFromDocuments(analyzer, new[] { document, attributesDocument });
 
                 var newCompilerDiagnostics = GetNewDiagnostics(compilerDiagnostics, GetCompilerDiagnostics(document));
 

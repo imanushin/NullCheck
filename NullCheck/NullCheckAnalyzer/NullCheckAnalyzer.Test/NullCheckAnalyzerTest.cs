@@ -58,37 +58,6 @@ namespace NullCheckAnalyzer.Test
             };
 
             VerifyCSharpDiagnostic(test, expected);
-
-            const string fixtest = @"
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Diagnostics;
-
-    namespace ConsoleApplication1
-    {
-        internal sealed class TypeName
-        {
-            public TypeName([NotNull]string value)
-            {
-                Value = value;
-            }
-            
-            public string Value
-            {
-                get;
-                private set;
-            }
-        }
-    }";
-            VerifyCSharpFix(test, fixtest);
-        }
-
-        protected override CodeFixProvider GetCSharpCodeFixProvider()
-        {
-            return new NullCheckAnalyzerCodeFixProvider();
         }
 
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()

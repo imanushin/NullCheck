@@ -9,6 +9,7 @@ namespace NullCheckAnalyzer
     public class NullCheckAnalyzer : DiagnosticAnalyzer
     {
         public const string ParameterIsNullId = "NullCheckAnalyzer_MethodContainNulls";
+        public const string ParameterIsNullIdWithoutCodeFix = "NullCheckAnalyzer_MethodContainNullsAssemblyIsNotReferenced";
 
         // You can change these strings in the Resources.resx file. If you do not want your analyzer to be localize-able, you can use regular strings for Title and MessageFormat.
         internal static readonly LocalizableString Title = new LocalizableResourceString(nameof(Resources.AnalyzerTitle), Resources.ResourceManager, typeof(Resources));
@@ -19,7 +20,12 @@ namespace NullCheckAnalyzer
         internal static DiagnosticDescriptor Rule = new DiagnosticDescriptor(ParameterIsNullId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
-        { get { return ImmutableArray.Create(Rule); } }
+        {
+            get
+            {
+                return ImmutableArray.Create(Rule);
+            }
+        }
 
         public override void Initialize(AnalysisContext context)
         {
