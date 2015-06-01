@@ -18,13 +18,9 @@ namespace NullCheckAnalyzer
 
         internal static DiagnosticDescriptor Rule = new DiagnosticDescriptor(ParameterIsNullId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
 
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
-        {
-            get
-            {
-                return ImmutableArray.Create(Rule);
-            }
-        }
+        private static readonly ImmutableArray<DiagnosticDescriptor> supportedDiagnostics = ImmutableArray.Create(Rule);
+
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => supportedDiagnostics;
 
         public override void Initialize(AnalysisContext context)
         {
